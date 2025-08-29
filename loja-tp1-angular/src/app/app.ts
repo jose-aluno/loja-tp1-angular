@@ -11,4 +11,10 @@ import { Banner } from './core/banner/banner';
 })
 export class App {
   
+  sobre? : string
+
+  receberSobre(texto: string) {
+    this.sobre = texto
+  }
+
 }
