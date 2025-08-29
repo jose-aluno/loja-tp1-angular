@@ -1,11 +1,11 @@
 <header>
     <img src="./images/logo-ifsp.png" alt="">
     <div>
-        <h1>{{title}}</h1>
+        <h1>{{title()}}</h1>
         <nav>
             <a href="#">Home</a>
             <a href="#">Produtos</a>
-            <a href="#">Sobre</a>
+            <a href="#" (click)="exibirSobre()">Sobre</a>
         </nav>
     </div>
 </header>
