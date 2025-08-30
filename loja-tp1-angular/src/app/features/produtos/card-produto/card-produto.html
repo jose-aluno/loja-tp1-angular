@@ -1,0 +1,12 @@
+<article class="card">
+    <img [src]="produto().imageUrl" [alt]="produto().nome" class="thumb">
+    <div class="conteudo">
+        <h3 class="titulo">{{produto().nome}}</h3>
+        <p class="desc">{{produto().descricao}}</p>
+
+        <div class="linhapreco">
+            <span class="preco">{{produto().preco}}</span>
+            <app-contador></app-contador>
+        </div>
+    </div>
+</article>
