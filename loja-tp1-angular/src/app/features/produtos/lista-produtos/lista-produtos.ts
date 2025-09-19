@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { CardProduto } from "../card-produto/card-produto";
+import { Component, computed, signal, inject } from '@angular/core';
 import { Produto } from '../../../model/produto';
+import { CardProduto } from "../card-produto/card-produto";
+import { ProdutoService } from '../services/produto.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lista-produtos',
@@ -9,27 +11,21 @@ import { Produto } from '../../../model/produto';
   styleUrl: './lista-produtos.css'
 })
 export class ListaProdutos {
+  private produtoService = inject(ProdutoService);
+  private produtos = toSignal<Produto[],Produto[]>(this.produtoService.listar(),{initialValue:[]})
 
-  produtos: Produto[] = [
-    {
-    id: 1,
-    nome: 'produto 1',
-    descricao: 'produto 1',
-    preco: 179,
-    promo: true
-    },
-    {
-    id: 2,
-    nome: 'produto 1',
-    descricao: 'produto 1',
-    preco: 179
-    },
-    {
-    id: 3,
-    nome: 'produto 1',
-    descricao: 'produto 1',
-    preco: 179
-    }
-  ]
+  apenasPromo = signal(false);
 
+  prodExibidos = computed(() => this.apenasPromo() ? this.produtos().filter(p => p.promo) : this.produtos());
+
+  alternarPromo(){
+    this.apenasPromo.update(p=>!p);
+  }
+  onAddProduct(produto:{id:number, quantity:number}){
+    alert(`Produto: ${produto.id}, Quantidade: ${produto.quantity}`);
+  }
+
+  onViewProduct(id:number){
+    alert(`Id do produto: ${id}`);
+  }
 }
