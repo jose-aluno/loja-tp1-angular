@@ -3,6 +3,7 @@ import { Produto } from '../../../model/produto';
 import { CardProduto } from "../card-produto/card-produto";
 import { ProdutoService } from '../services/produto.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lista-produtos',
@@ -13,6 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class ListaProdutos {
   private produtoService = inject(ProdutoService);
   private produtos = toSignal<Produto[],Produto[]>(this.produtoService.listar(),{initialValue:[]})
+  private router = inject(Router)
 
   apenasPromo = signal(false);
 
@@ -26,6 +28,6 @@ export class ListaProdutos {
   }
 
   onViewProduct(id:number){
-    alert(`Id do produto: ${id}`);
+    this.router.navigate(['/produtos1', id])
   }
 }
