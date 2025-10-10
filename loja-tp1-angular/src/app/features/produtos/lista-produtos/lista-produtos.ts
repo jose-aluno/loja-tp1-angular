@@ -28,6 +28,6 @@ export class ListaProdutos {
   }
 
   onViewProduct(id:number){
-    this.router.navigate(['/produtos1', id])
+    this.router.navigate(['/produtos', id])
   }
 }
