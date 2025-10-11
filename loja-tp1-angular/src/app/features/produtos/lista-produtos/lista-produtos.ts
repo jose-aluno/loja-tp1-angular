@@ -4,6 +4,7 @@ import { CardProduto } from "../card-produto/card-produto";
 import { ProdutoService } from '../services/produto.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'lista-produtos',
@@ -13,8 +14,15 @@ import { Router } from '@angular/router';
 })
 export class ListaProdutos {
   private produtoService = inject(ProdutoService);
-  private produtos = toSignal<Produto[],Produto[]>(this.produtoService.listar(),{initialValue:[]})
   private router = inject(Router)
+  loading = signal(true)
+
+  private produtos = toSignal<Produto[],Produto[]>(
+    this.produtoService.listar().pipe(
+      finalize(() => this.loading.set(false))
+    ),
+    {initialValue:[]}
+  )
 
   apenasPromo = signal(false);
 

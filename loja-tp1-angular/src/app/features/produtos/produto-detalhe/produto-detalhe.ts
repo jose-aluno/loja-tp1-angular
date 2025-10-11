@@ -17,7 +17,7 @@ export class ProdutoDetalhe {
   private produtoService = inject(ProdutoService)
 
   loading = signal(true)
-  produto = signal<Produto | undefined>(undefined)
+  produto = signal<Produto | unknown>(undefined)
 
   constructor(){
     this.route.paramMap.subscribe(pm => {
