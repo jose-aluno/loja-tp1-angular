@@ -17,21 +17,20 @@ export class ProdutoDetalhe {
   private produtoService = inject(ProdutoService)
 
   loading = signal(true)
-  produto = signal<Produto | unknown>(undefined)
+  produto = signal<Produto | null>(null)
 
   constructor(){
     this.route.paramMap.subscribe(pm => {
-      const id = pm.get('id') ? Number(pm.get('id')) : NaN
-
-      if(isNaN(id)){
-        this.produto.set(undefined)
+      const id = Number(pm.get('id'))
+      if (isNaN(id)) {
+        this.produto.set(null)
         this.loading.set(false)
         return
       }
 
       this.loading.set(true)
-      this.produtoService.getById(id).subscribe(p => {
-        this.produto.set(p)
+      this.produtoService.getById(id).subscribe(produto => {
+        this.produto.set(produto)
         this.loading.set(false)
       })
     })

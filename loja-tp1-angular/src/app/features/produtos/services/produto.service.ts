@@ -20,7 +20,13 @@ export class ProdutoService {
     )
   }
 
-  getById(id: number): Observable<Produto | unknown>{
-   return of(this.http.get<Produto>(`https://fakestoreapi.com/products/${id}`))
+  getById(id: number): Observable<Produto | null> {
+    return this.http.get<any>(`https://fakestoreapi.com/products/${id}`).pipe(
+      map(json => ProdutoMapper.fromJson(json)),
+      catchError(err => {
+        this.logger.error(`[ProdutoService] Erro ao buscar produto ${id}`, err)
+        return of(null)
+      })
+    )
   }
 }
