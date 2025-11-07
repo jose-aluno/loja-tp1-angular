@@ -1,18 +1,39 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
-jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v5
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+name: CD - Deploy Angular para Vercel # define o nome workflow
+
+on: # define o evento que dispara o workflow
+  push: #dispara sempre que houver um push
+    branches: [ main ] # monitora a branch principal
+
+jobs: #define os jobs desse workflow
+  build_and_deploy: # nome do job (construção e implantação)
+    runs-on: ubuntu-latest #o job é executado em uma máquina virtual hospedada pelo github
+
+    env: # define as variáveis de ambiente (secrets) que o job pode usar
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # a variável VERCEL_TOKEN é lida do github secrets e usada pela vercel action
+
+    steps: #define os passos que serão executados neste job
+      - name: Checkout do Repositório #titulo do passo
+        uses: actions/checkout@v4 # usa a action pré-construída para baixar o código
+
+      - name: Configurar Node.js #titulo do passo
+        uses: actions/setup-node@v4 # usa a action para configurar o ambiente node
+        with:
+          node-version: '20.x' # especifica a versão do Node.js
+
+      - name: Instalar Dependências #titulo do passo
+        working-directory: ./loja-tp1-angular/ # informa ao github para entrar no subdiretório antes de rodar o comando
+        run: npm install # executa o comando para baixar as dependências
+
+      - name: Fazer Build de Produção #titulo do passo
+        working-directory: ./loja-tp1-angular/ # informa ao github para entrar no subdiretório antes de rodar o comando
+        run: npm run build -- --configuration production # Executa o comando de build para produção
+        
+      - name: Deploy para Vercel via CLI #titulo do passo
+        run: npm install -g vercel # adiciona o Vercel CLI ao ambiente
+
+      - name: Publicar Aplicação (Vercel) #titulo do passo
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes #este comando executa a ferramenta de deploy vercel,
+                                                                     # forçando a publicação no ambiente de produção (--prod),
+                                                                     # usando o token de autenticação do github, 
+                                                                     # confirmando a operação (--yes), e publicando o conteúdo 
+                                                                     # do diretório do build Angular
